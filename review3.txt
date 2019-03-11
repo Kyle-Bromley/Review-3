@@ -1,0 +1,115 @@
+#pragma once
+#include "RowAray.h"
+template<class T>
+class Table {
+protected:
+	int szRow;
+	int szCol;
+	RowAray<T> **columns;
+public:
+	Table(unsigned int, unsigned int);
+	Table(const Table<T> &);
+	virtual ~Table();
+	int getSzRow()const { return szRow; }
+	int getSzCol()const { return szCol; }
+	T getData(int, int)const;
+	void setData(int, int, T);
+	Table<T> operator+(const Table<T> &);
+};
+
+template<class T>
+Table<T>::Table(unsigned int r, unsigned int c)
+{
+	szRow = r;
+	szCol = c;
+	columns = new RowAray<T>*(new RowAray<T>(szRow*szCol));
+}
+
+template<class T>
+Table<T>::Table(const Table<T>& cT)
+{
+	szRow = cT.getSzRow();
+	szCol = cT.getSzCol();
+
+	columns = cT.columns;
+}
+
+template<class T>
+inline Table<T>::~Table()
+{
+}
+
+template<class T>
+inline T Table<T>::getData(int r, int c) const
+{
+	return (*records)->getData(r + c);
+}
+
+template<class T>
+inline void Table<T>::setData(int r, int c, T data)
+{
+	columns[r][c] = data;
+}
+
+template<class T>
+inline Table<T> Table<T>::operator+(const Table<T>& sT)
+{
+	Table<T> table(sT);
+	
+	for (int row = 0; row < this->getSzRow(); row++) 
+	{
+		for (int col = 0; this->getSzCol(); col++)
+		{
+			table[row][col] = (this->columns[row][col] + sT.columns[row][col]);
+		}
+	}
+
+	return table;
+}
+
+===========================================================================================================================================
+#pragma once
+template<class T>
+class RowAray {
+protected:
+	int size;
+	T *rowData;
+public:
+	RowAray(int);
+	virtual ~RowAray();
+	int getSize()const { return size; }
+	T getData(int i)const {
+		if (i >= 0 && i<size)return rowData[i];
+		else return 0;
+	}
+	void setData(int, T);
+};
+
+template<class T>
+RowAray<T>::RowAray(int s)
+{
+	size = s;
+	rowData = new T[s];
+
+	for (int i = 0; i < s; i++)
+	{
+		rowData[i] = rand() % 90 + 10;
+	}
+}
+
+template<class T>
+RowAray<T>::~RowAray()
+{
+}
+
+template<class T>
+void RowAray<T>::setData(int loc, T data)
+{
+	rowData[loc] = data;
+}
+
+google this error
+
+
+Error	C2676	binary '[': 'Table<float>' does not define this operator or a conversion to a type acceptable to the predefined operator	
+
